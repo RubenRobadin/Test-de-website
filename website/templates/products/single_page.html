@@ -1,0 +1,165 @@
+{% extends 'layout.html' %}
+{% block content %}
+{% include 'navbar.html' %}
+<!---Fin de Navbar-->
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6" id="b_image">
+            <img src="{{url_for('static',filename='images/' + product.image_1)}}" alt="{{product.name}}" width="400" height="400">
+        </div>
+        <div class="col-md-6">           
+            <h4>Product name: {{product.name}} </h4>
+            <hr>
+            <p>Product price: ${{product.price}}</p>
+            <hr>
+            {% if product.discount > 0 %}
+            <p>Discount: {{product.discount}} % </p>
+            {% endif %}
+            <hr>
+            <b>Product discription</b>
+            <p>{{product.desc}}</p>
+            <form action="{{url_for('AddCart')}}" method="post">
+                <input type="hidden" name="product_id" value="{{product.id}}">
+                <button type="submit" class="btn btn-sm btn-warning">Add to Cart</button>
+                <label for="quantity">Quantity: </label>
+                <input type="number" name="quantity" value="1" min="1" max="{{product.stock}}">
+                {% set colors = product.colors.split(',') %}
+                <label for="colors">Colors: </label>
+                <select name="colors" id="colors">
+                    {% for color in colors %}
+                    {% set col = color.split(':') %}
+                    <option value="{{col[0]}}">{{col[0] | capitalize }}</option>
+                    {% endfor %}
+                </select>
+            </form>
+            {% if current_user.is_authenticated %}
+            <form action="{{url_for('AddReview')}}" id="addReviewForm" method="post">
+                <input type="hidden" name="product_id" value="{{product.id}}">
+                <p for="rating">Rating (0-5):</p>
+                
+                <input type="number" id="rating" name="rating" min="0" max="5" required>
+
+                <p for="reviewText">Review:</p>
+                <textarea id="reviewText" name="reviewText" required></textarea>
+                
+                <br> <br>
+                <button type="submit" class="btn btn-primary" onclick="addReview()">Submit Review</button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-md-12" id="s_image">
+            <img src="{{url_for('static',filename='images/'+ product.image_1)}}" alt="{{product.name}}" width="100" height="100">
+            <img src="{{url_for('static',filename='images/'+ product.image_2)}}" alt="{{product.name}}" width="100" height="100" class="ml-5">
+            <img src="{{url_for('static',filename='images/'+ product.image_3)}}" alt="{{product.name}}" width="100" height="100" class="ml-5">
+        </div>
+    </div>
+    <!-- Reviews section -->
+    <div class="row" style="text-align: center;">
+        <div class="col-md-12" id="create review">
+            <!-- Form for adding a new review -->
+
+        </div>
+    </div>
+
+
+    <div id="reviews">
+        <br>
+        <h3>Product Reviews</h3>
+    
+        {% for single_review in reviews %}
+        <!-- Base template for a review -->
+        <div class="review">
+            <h4>Rating: <span class="rating">{{single_review.score}}</span></h4>
+            <p class="review-text">{{single_review.review_text}}</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Existing content... -->
+    </div>
+   
+</div>
+
+<style>
+    #reviews {
+        margin-top: 20px;
+    }
+
+    .review {
+        border: 1px solid #ddd;
+        padding: 10px;
+        margin-bottom: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        background-color: #fff;
+        transition: box-shadow 0.3s ease-in-out;
+    }
+
+    .review:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .review p {
+        margin: 0;
+    }
+
+    .review h4 {
+        font-size: 18px;
+        color: #333;
+    }
+
+    .review .rating {
+        font-weight: bold;
+        color: #e44d26; /* Adjust the color based on your design */
+    }
+
+    .review .review-text {
+        color: #555;
+    }
+
+    h3 {
+        color: #333;
+    }
+</style>
+
+
+<script>
+   var b_image = document.getElementById('b_image');
+   var s_image = document.getElementById('s_image').getElementsByTagName('img');
+    for(var i = 0; i < s_image.length; i++){
+
+        s_image[i].addEventListener('click', full_image);
+    }
+    function full_image(){
+        var ImageSRC = this.getAttribute('src');
+        b_image.innerHTML = "<img src=" + ImageSRC + " width='400' height='400'>";
+    }
+
+    function addReview() {
+        // Add logic to handle the submission of a new review
+        var userName = document.getElementById('userName').value;
+        var rating = document.getElementById('rating').value;
+        var reviewText = document.getElementById('reviewText').value;
+
+        // You can use this data to update the reviews section dynamically
+        var reviewsSection = document.getElementById('reviews');
+        var newReview = document.createElement('div');
+        newReview.classList.add('review');
+        newReview.innerHTML = '<p>User: ' + userName + '</p>' +
+                              '<p>Rating: ' + rating + ' out of 5</p>' +
+                              '<p>Review: ' + reviewText + '</p>';
+        reviewsSection.appendChild(newReview);
+
+        // Clear the form fields after submission
+        document.getElementById('userName').value = '';
+        document.getElementById('rating').value = '';
+        document.getElementById('reviewText').value = '';
+    }
+
+
+</script>
+{% endblock content %}
