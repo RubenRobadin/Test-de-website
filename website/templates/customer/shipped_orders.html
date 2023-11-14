@@ -1,0 +1,55 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<div class="container mt-5">
+    <h2>Order details</h2>
+
+  {% for order in orders %}
+    <div class="card mb-4">
+      <div class="card-header">
+        <h3>Order #{{ order.invoice }}</h3>
+        <small>Order date {{ order.date_created.strftime('%Y-%m-%d %H:%M:%S') }}</small>
+      </div>
+      <div class="card-body">
+        <ul class="list-group">
+          {% for key, item in order.orders.items() %}
+            <li class="list-group-item">
+              <strong>{{ item['name'] }}</strong> - Quantity: {{ item['quantity'] }}
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  {% endfor %}
+  
+    <h2>Shipment details</h2>
+    {% for order in orders %}
+    <div class="card mb-4">
+        <div class="card-header">
+            <p>Delivered by UPS</p>
+            <p>Delivery Estimated</p>
+            <p>"X" Week day, "X" Month of the year, 2023 by "X" Time of the day</p>
+
+            <h3>Order #{{ order.invoice }}</h3>
+          
+      
+        </div>
+        <div class="card-body">
+          <ul class="list-group">
+            {% for key, item in order.orders.items() %}
+              <li class="list-group-item">
+                <strong>{{ item['name'] }}</strong> - Quantity: {{ item['quantity'] }}
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    {% endfor %}
+   
+  
+    <form action="{{ url_for('return_home') }}" method="post" class="text-center mb-4">
+      <button type="submit" class="btn btn-primary">Return to home page</button>
+    </form>
+  </div>
+  
+  {% endblock content %}

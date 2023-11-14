@@ -1,1 +1,10 @@
-<h1>Thank you shopping with us! </h1>
+{% extends 'layout.html' %}
+{% block content %}
+<div style="text-align: center;">
+    <h1>Thank you shopping with us! </h1>
+    <br> <br>
+    <form action="{{url_for('return_home')}}" method="post">
+        <button type="submit" class="btn btn-primary">Return to home page</button>
+    </form>
+</div>
+{% endblock content %}
