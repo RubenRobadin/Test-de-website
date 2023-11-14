@@ -3,7 +3,7 @@
 
 <div class="container">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="{{url_for('admin')}}">Management</a>
+        <a class="navbar-brand" href="{{url_for('admin')}}">Navbar</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -20,12 +20,12 @@
             </li>
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Add 
+                Add
               </a>
               <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                <a class="dropdown-item" href="{{url_for('addproduct')}}">Add Product</a>
-                <a class="dropdown-item" href="{{url_for('addbrand')}}">Add Brand</a>
-                <a class="dropdown-item" href="{{url_for('addcat')}}">Add Category</a>
+                <a class="dropdown-item" href="{{url_for('addproduct')}}">Add product</a>
+                <a class="dropdown-item" href="{{url_for('addbrand')}}">Add brand</a>
+                <a class="dropdown-item" href="{{url_for('addcat')}}">Add category</a>
               </div>
             </li>
           </ul>
@@ -91,7 +91,7 @@
                         </div>
                         
                         <div class="col-md-4"><input type="file" name="image_3" id="image_3"> 
-                            <a href="{{url_for('static',filename='images/' + getproduct.image_3)}}"> image/{{ getproduct.image_3}}</a>
+                            <a href="{{url_for('static',filename='images/' + getproduct.image_3)}}"> images/{{ getproduct.image_3}}</a>
                         </div>
                       
                         {% else %}
