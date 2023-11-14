@@ -52,5 +52,7 @@ class Category(db.Model):
 
     def __repr__(self):
         return '<Category %r>' % self.name
+    
+
 with app.app_context():
     db.create_all()

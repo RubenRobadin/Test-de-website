@@ -20,6 +20,8 @@ def return_reviews(product_id):
     reviews = Review.query.filter_by(product_id=product_id).all()
     return reviews
 
+
+
 @app.route('/')
 def home():
     page = request.args.get('page',1, type=int)
