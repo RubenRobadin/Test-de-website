@@ -44,5 +44,39 @@ class TestLogin(unittest.TestCase):
         ), follow_redirects=True)
         self.assertIn(b'This field is required.', response.data, "Empty username and password should show error message")
 
+class TestAdminAdd(unittest.TestCase):
+    def setUp(self):
+        # Set up the Flask application context before each test method is run
+        self.app = app.test_client()  # Create a test client for making requests
+        self.context = app.app_context()
+        self.context.push()
+        app.config['TESTING'] = True  # Set testing mode to True
+        app.config['WTF_CSRF_ENABLED'] = False  # Disable CSRF protection for testing
+
+    def tearDown(self):
+        # Pop the Flask application context after each test method is run
+        self.context.pop()
+
+    def test_valid_add_brand(self):
+ 
+        # Send a POST request to add the product to the cart
+        response = self.app.post('/addbrand', data=dict(
+            brand='Marca Test'
+        ), follow_redirects=True)
+
+        # Check if the response contains the expected HTML content
+        self.assertIn(b'was added to your database', response.data, "Adding a brand should give success message")
+
+    def test_valid_add_category(self):
+
+        # Send a POST request to add the product to the cart
+        response = self.app.post('/addcat', data=dict(
+            category='Category Test'
+        ), follow_redirects=True)
+
+        # Check if the response contains the expected HTML content
+        self.assertIn(b'was added to your database', response.data, "Adding a category should give success message")
+    
+
 if __name__ == "__main__":
     unittest.main()
