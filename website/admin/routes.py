@@ -2,15 +2,15 @@ from flask import render_template,session, request,redirect,url_for,flash
 from website import app,db,bcrypt
 from .forms import RegistrationForm,LoginForm
 from .models import User
-from flask_login import login_required
 from website.products.models import Addproduct,Category,Brand
-
+from website.customers.model import Register
+from flask_login import login_required, current_user, logout_user, login_user
 
 @app.route('/admin')
-@login_required
 def admin():
     products = Addproduct.query.all()
     return render_template('admin/index.html', title='Admin page',products=products)
+
 
 @app.route('/brands')
 def brands():
@@ -51,3 +51,24 @@ def login():
             flash(f'Wrong email and password', 'danger')
             return redirect(url_for('login'))
     return render_template('admin/login.html',title='Login page',form=form)
+
+@app.route('/admin/logout')
+def admin_logout():
+    logout_user()
+    return redirect(url_for('home'))
+
+@app.route('/admin/delete-user/<int:user_id>', methods=['GET','POST'])
+def delete_user(user_id):
+    user_to_delete = Register.query.get(user_id)
+
+    if user_to_delete:
+        db.session.delete(user_to_delete)
+        db.session.commit()
+
+    return redirect(url_for('manage_accounts'))
+
+@app.route('/admin/manage-user-accounts',methods=['GET','POST'])
+def manage_accounts():
+    user_list = Register.query.all()
+    
+    return render_template('admin/manage_users.html',user_data=user_list)
