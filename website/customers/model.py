@@ -2,6 +2,7 @@ from website import db, login_manager, app
 from datetime import datetime
 from flask_login import UserMixin
 import json
+from website.products.models import Review
 
 @login_manager.user_loader
 def user_loader(user_id):
@@ -21,7 +22,7 @@ class Register(db.Model, UserMixin):
     zipcode = db.Column(db.String(50), unique= False)
     profile = db.Column(db.String(200), unique= False , default='profile.jpg')
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-
+    #reviews = db.relationship('Review') 
     def __repr__(self):
         return '<Register %r>' % self.name
 

@@ -3,6 +3,7 @@ from flask_login import login_required, current_user, logout_user, login_user
 from website import app,db,photos, search,bcrypt,login_manager
 from .forms import CustomerRegisterForm, CustomerLoginFrom
 from .model import Register,CustomerOrder
+from website.products.models import Addproduct
 import secrets
 import os
 import json
@@ -30,7 +31,6 @@ def payment():
     orders =  CustomerOrder.query.filter_by(customer_id = current_user.id,invoice=invoice).order_by(CustomerOrder.id.desc()).first()
     orders.status = 'Paid'
     db.session.commit()
-    print('Pagado')
     return redirect(url_for('thanks'))
 
 @app.route('/thanks',methods=['POST'])
@@ -90,6 +90,14 @@ def get_order():
         updateshoppingcart
         try:
             order = CustomerOrder(invoice=invoice,customer_id=customer_id,orders=session['Shoppingcart'])
+            keys_list = list(session['Shoppingcart'].keys())
+            for key in keys_list:
+                product_dict = session['Shoppingcart'][key]
+                product_name = product_dict['name']
+
+                stock = Addproduct.query.filter_by(name=product_name).all()
+                stock = stock[0]
+                stock.stock -= 1
             db.session.add(order)
             db.session.commit()
             session.pop('Shoppingcart')
@@ -163,6 +171,32 @@ def get_pdf(invoice):
             return response
     return request(url_for('orders'))
 
+@app.route('/', methods=['GET', 'POST'])
+def return_home():
+    return redirect(url_for('home'))
 
+@app.route('/customer/profile', methods=['GET', 'POST'])
+def customer_profile():
+    if request.method == "POST":
+        new_name = request.form.get('new_name')
+        # Update user information in the database
+        customer_data = Register.query.filter_by(name=current_user.name).all()
+        customer_data[0].name = new_name
+        new_contact = request.form.get('new_contact')
+        customer_contact = Register.query.filter_by(contact=current_user.contact).all()
+        customer_contact[0].contact = new_contact
+        new_address = request.form.get('new_address')
+        customer_address = Register.query.filter_by(address=current_user.address).all()
+        customer_address[0].address = new_address
+        db.session.commit()
+    return render_template('customer/profile.html')
 
+@app.route('/customer/customer-orders', methods=['GET', 'POST'])
+def customer_show_orders():
+    orders =  CustomerOrder.query.filter_by(customer_id = current_user.id)
 
+    return render_template('customer/shipped_orders.html',orders=orders)
+
+@app.route('/customer/customer-service', methods=['GET', 'POST'])
+def customer_service():
+     return render_template('customer/return_prodpage.html')
